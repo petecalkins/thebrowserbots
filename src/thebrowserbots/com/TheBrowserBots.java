@@ -30,7 +30,7 @@ TheBrowserBotsFileCloud TheBrowserBotsAppFrame;
 String OS;
 String USERCLOUDDIR;
 TheBrowserBotsConfig TheBrowserBotsConfig;
- public final String ProgramVersion = "1.1.45";
+ public final String ProgramVersion = "1.1.48";
  String APPID;
  String BROWSERMATORFOLDER;
  ArrayList<String> theseErrors = new ArrayList();

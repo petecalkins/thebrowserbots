@@ -8,8 +8,8 @@ package thebrowserbots.com;
 
 
 import java.awt.event.ActionListener;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.swing.event.DocumentListener;
 
 
@@ -458,18 +458,16 @@ public void AllRequiredCheck()
 
 public void ValidateEmailAddress() {
    boolean result = true;
-   Pattern p = Pattern.compile("^[A-Za-z0-9-]+(\\-[A-Za-z0-9])*@"
-                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9])");
-        Matcher m = p.matcher(getEmail());
-
-        if (m.find())
-        {
-         result = true;
-        }else{
-          result = false;
-        }
-
- 
+   try {
+      InternetAddress emailAddr = new InternetAddress(getEmail());
+      emailAddr.validate();
+   
+   } catch (AddressException ex) {
+      result = false;
+    
+   }
+   finally
+   {
   if (result)
   {
       jLabelEMAILINVALID.setVisible(false);
@@ -483,7 +481,7 @@ public void ValidateEmailAddress() {
       EMAILVALID=false;
       isActive=false;
   }
-
+}
 }
     // Variables declaration - do not modify                     
     private javax.swing.JButton jButtonLogin;
