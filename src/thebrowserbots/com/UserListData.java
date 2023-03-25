@@ -36,7 +36,7 @@ public class UserListData {
      // hardcode description til I figure a workaround
      listDescription = "";
      username = in_username;
-     USERLISTDIR =  System.getProperty("user.home") + File.separator + "TheBrowserBotsCloudFiles" + File.separator + "UserLists" + File.separator;
+     USERLISTDIR =  System.getProperty("user.home") + File.separator + "PTPCloudFiles" + File.separator + "UserLists" + File.separator;
      defaultFile = in_defaultFile;
      csvFile = currentList;
    

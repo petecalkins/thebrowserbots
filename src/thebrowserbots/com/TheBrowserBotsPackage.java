@@ -16,13 +16,13 @@ public class TheBrowserBotsPackage {
  
   WebEngine CloudEngine;
   TheBrowserBots mainAppController;
-
+String[] args;
    public static String USERDIR;
 
   TheBrowserBotsPackage(File browserMationFile_in, File mapFile_in, File listFile_in, TheBrowserBots in_AppController, WebEngine in_CloudEngine)
   {
  
-   
+   args = new String[3];
       BrowserMationFile = browserMationFile_in;
       if (mapFile_in.getName().contains(".csv"))
       {
@@ -44,6 +44,8 @@ public class TheBrowserBotsPackage {
       
     
         
+    
+        
         
 
    File file = new File(USERDIR);
@@ -62,24 +64,30 @@ public class TheBrowserBotsPackage {
         {
             
             
-            File browserMatorFileRef = new File (mainAppController.BROWSERMATORFOLDER + "Browsermator-Selenium4.jar");
-            if (browserMatorFileRef.exists()==false)
-            {
-              mainAppController.ExtractBrowserMatorFiles();
-            }
-            setPermissions(browserMatorFileRef);
-             
+                    
             if (mapFile!=null)
              {
-             
-    Runtime.getRuntime().exec("java -jar " + mainAppController.BROWSERMATORFOLDER + "Browsermator-Selenium4.jar" + " runsilent " + BrowserMationFile + " " + mapFile);
+                 args[0]="runsilent";
+                 args[1]=BrowserMationFile.getAbsolutePath(); 
+                 args[2]=mapFile.getAbsolutePath();
+            STAppController thisController = new STAppController(args);   
+         
+   // Runtime.getRuntime().exec("java -jar " + mainAppController.BROWSERMATORFOLDER + "Browsermator-Selenium4.jar" + " runsilent " + BrowserMationFile + " " + mapFile);
  //     Runtime.getRuntime().exec("java -jar " + mainAppController.BROWSERMATORFOLDER + "Browsermator-Selenium4.jar" + " open " + BrowserMationFile + " " + mapFile);
-//   mapFile = null;
+   mapFile = null;
+  //   String URLwithLogin = mainAppController.rootURL + "/browse_files.php?app_id="+mainAppController.APPID+ "&version=" + mainAppController.ProgramVersion + "&loginName=" + mainAppController.loginName + "&loginPassword=" + mainAppController.loginPassword;
+
+//   CloudEngine.load(URLwithLogin); 
              }
              else
              {
-         Runtime.getRuntime().exec("java -jar " + mainAppController.BROWSERMATORFOLDER + "Browsermator-Selenium4.jar" + " runsilent " + BrowserMationFile);
-             
+                  args[0]="runsilent";
+                 args[1]=" " + BrowserMationFile;
+                   STAppController thisController2 = new STAppController(args);   
+     //    Runtime.getRuntime().exec("java -jar " + mainAppController.BROWSERMATORFOLDER + "Browsermator-Selenium4.jar" + " runsilent " + BrowserMationFile);
+            String URLwithLogin = mainAppController.rootURL + "/browse_files.php?app_id="+mainAppController.APPID+ "&version=" + mainAppController.ProgramVersion + "&loginName=" + mainAppController.loginName + "&loginPassword=" + mainAppController.loginPassword;
+
+//   CloudEngine.load(URLwithLogin); 
              }
      //     mainAppController.dispose();
      // Platform.runLater(new Runnable() {
@@ -97,15 +105,6 @@ public class TheBrowserBotsPackage {
         {
             System.out.println(ex.toString());
         }
- //                 try
- //                 {
- //                Thread.sleep(100000);
- //                 }
- //                 catch (Exception ex)
- //                 {
-        //              System.out.println (ex.toString());
- //                 }
- //System.exit(0);
  
            
          

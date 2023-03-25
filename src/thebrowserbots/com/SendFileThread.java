@@ -25,8 +25,7 @@ public class SendFileThread extends SwingWorker<String, Integer>{
  File clean_file;
  TheBrowserBots mainApp;
 // String rootURL = "http://localhost";
-// String rootURL = "https://www.thebrowserbots.com";
-  String rootURL = "https://www.thebrowserbots.com";
+ String rootURL = "https://www.thebrowserbots.com";
   String USERCLOUDDIR;
 WebEngine cloudEngine;
 String version;
@@ -36,7 +35,7 @@ Boolean isList;
     SendFileThread(String in_version, String in_app_id, WebEngine in_cloudREF, File in_sendfile, String in_name, String in_password, String in_fileid, String in_filename, Boolean in_isList)
   {
 
- USERCLOUDDIR = System.getProperty("user.home") + File.separator + "TheBrowserBotsCloudFiles";
+ USERCLOUDDIR = System.getProperty("user.home") + File.separator + "PTPCloudFiles";
  this.thisUpDiag = null;
  this.sendfile = in_sendfile;
  this.name = in_name;

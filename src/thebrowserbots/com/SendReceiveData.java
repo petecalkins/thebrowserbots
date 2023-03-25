@@ -43,8 +43,8 @@ String app_id;
 String version;
 
 //  String rootURL = "http://localhost";
-// String rootURL = "https://www.thebrowserbots.com";
  String rootURL = "https://www.thebrowserbots.com";
+
     SendReceiveData(String in_url, UserParamHash userparams)
     {
              url = in_url;

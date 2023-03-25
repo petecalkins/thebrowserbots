@@ -189,8 +189,16 @@ if (file_exists == false)
 		Runtime runtime = Runtime.getRuntime();
       switch (OperatingSystem)
       {
+            case "Windows64":
+              process = Runtime.getRuntime().exec(new String[] { "wmic", "bios", "get", "serialnumber" });
+        process.getOutputStream().close();
+        Scanner sc64 = new Scanner(process.getInputStream());
+        String property64 = sc64.next();
+        String serial64 = sc64.next();
+      ret_val = serial64;
+      break;
           
-          case "Windows":
+          case "Windows32":
               process = Runtime.getRuntime().exec(new String[] { "wmic", "bios", "get", "serialnumber" });
         process.getOutputStream().close();
         Scanner sc = new Scanner(process.getInputStream());

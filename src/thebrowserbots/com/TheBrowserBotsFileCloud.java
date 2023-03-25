@@ -51,8 +51,6 @@ import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javax.swing.JComboBox;
-import javax.swing.JTextField;
-
 
 
 public class TheBrowserBotsFileCloud {
@@ -236,14 +234,10 @@ connection.setDoOutput(true);
 else
 {
 
-      Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-
+     
                 webEngine.load(url);
 
-            }
-        });
+  
 }
   }
   public class Debug {
@@ -310,7 +304,8 @@ if (HTML_TO_SEND=="Unable to connect to TheBrowserBots.com.")
 }
 else
 {
-webEngine.load(url);
+ //  UpdateWebView(url);
+  webEngine.load(url);
 }
 Scene scene = new Scene(browser2);
 

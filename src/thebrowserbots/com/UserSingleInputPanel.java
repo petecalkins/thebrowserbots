@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package thebrowserbots.com;
-
+import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -26,25 +26,21 @@ public class UserSingleInputPanel extends JPanel {
                 
                
                 String input_value;
-              
-                String input_index;
+   
              
              
-    public UserSingleInputPanel(String in_inputname, String in_InputValue, String in_input_index)
+    public UserSingleInputPanel(String in_inputname)
     {
         inputName = in_inputname;
-        input_value = in_InputValue;
+        input_value = "";
       
-        input_index = in_input_index;
+
       
     }
   
     public void CreatePanel()
     {
-          JLabel jLabelInputValue;
-                JTextField jTextFieldInputValue;
-              
-                JPanel jPanelSetInputValue;
+        
              
           jLabelInputValue = new JLabel(inputName + " Value:");
           jTextFieldInputValue = new JTextField(input_value, 20);
@@ -61,6 +57,11 @@ public class UserSingleInputPanel extends JPanel {
                 setVisible(true);
 
     }
+     public void addjTextFieldInputValueActionListener(ActionListener listener)
+    {
+        jTextFieldInputValue.addActionListener(listener);
+    }
+
     public String GetInputName()
     {
         String ret_val = "";
@@ -74,12 +75,5 @@ public class UserSingleInputPanel extends JPanel {
         return ret_val;
     }
    
-    public String GetInputIndex()
-    {
-      String ret_val = "";
-      ret_val = input_index;
-      return ret_val;
-      
-    }
-  
+    
 }

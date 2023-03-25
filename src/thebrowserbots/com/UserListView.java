@@ -8,7 +8,6 @@ package thebrowserbots.com;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -184,8 +183,9 @@ public class UserListView {
  }
  public void Next()
  {
-         currentIndex++;
-         
+      
+     currentIndex++;
+      
      if (currentIndex>ulData.userListFiles.size()-1)
      {
        currentIndex = 0;  
@@ -193,20 +193,39 @@ public class UserListView {
      }
      else
      {
-       BrowseMode();   
-     }
+       if (currentIndex>0)
+       {
+       BrowseMode();  
+         UpdateDisplay();
+       }
+       else
+       {
+           DefaultListMode();
+       
+       }
+       }
  
   
-    UpdateDisplay();
+    
  }
  public void Previous()
  {
+      
     currentIndex--;
+    
     if (currentIndex<0)
     {
         currentIndex = ulData.userListFiles.size()-1;
-       BrowseMode();
-    }
+        if (currentIndex==0)
+        {
+         DefaultListMode();    
+        }
+        else
+        {
+        BrowseMode();
+         UpdateDisplay();
+        }
+        }
     else
     {
         if (currentIndex==0)
@@ -216,10 +235,11 @@ public class UserListView {
         else
         {
         BrowseMode();
+         UpdateDisplay();
         }
     }
  
-    UpdateDisplay();
+   
  }
  public void SetCurrentIndex(int in_index)
  {
@@ -239,8 +259,9 @@ public class UserListView {
  {
      if (currentIndex>=ulData.userListFiles.size())
      {
+     
         SaveLocalList();
-        
+     
      }
    ulData.getsetUserListFiles();
 
@@ -297,7 +318,8 @@ public class UserListView {
                 System.out.println("Failed to create directory!");
             }
         }
-     
+     if (currentIndex>0)
+     {
      try
      {
     FileWriter writer = new FileWriter(ulData.USERLISTFILENAME + "_" + currentIndex.toString() + ".csv");
@@ -324,8 +346,9 @@ public class UserListView {
      {
        System.out.println("Exception when creating list file:" + ex.toString());  
      }
+     }
    ulData.getsetUserListFiles();
-   
+   UpdateDisplay();
 //   BrowseMode();
        
  }

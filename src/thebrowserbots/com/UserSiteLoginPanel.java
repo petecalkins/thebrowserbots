@@ -10,10 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-/**
- *
- * @author Pete
- */
+
 public class UserSiteLoginPanel extends JPanel {
     String siteName;
                     

@@ -11,10 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-/**
- *
- * @author Pete
- */
+
 public class UserSiteLoginFrame extends JFrame{
   
   
