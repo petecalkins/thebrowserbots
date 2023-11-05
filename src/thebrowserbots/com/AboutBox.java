@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package peteythepervert.com;
+package thebrowserbots.com;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
