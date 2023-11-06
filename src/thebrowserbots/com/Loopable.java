@@ -11,6 +11,6 @@ package thebrowserbots.com;
  */
 public interface Loopable {
   
- void AddLoopListeners(BMAction action, SeleniumTestToolData STAppData, Procedure newbug);   
+ void AddLoopListeners(BMAction action, SeleniumTestTool STAppFrame, SeleniumTestToolData STAppData, Procedure newbug, ProcedureView newbugview);   
 
 }

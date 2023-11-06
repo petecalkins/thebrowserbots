@@ -2,7 +2,8 @@
 package thebrowserbots.com;
 
 
-
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
@@ -24,8 +25,10 @@ public class RunAllTests extends SwingWorker<String, Integer>
 {
 DriverFactory driverFactory;
 SeleniumTestToolData STAppData;
+SeleniumTestTool STAppFrame;
 WebDriver driver;
 
+BrowserMatorReport BrowserMatorReport;
 Boolean RUNWITHGUI;
 Boolean paused = false;
 Boolean RunAgain = false;
@@ -37,6 +40,31 @@ int EcTimeout;
  
 
  
+ public RunAllTests (SeleniumTestTool in_STAppFrame, SeleniumTestToolData in_STAppData)
+ {
+    
+ 
+ this.driverFactory = new DriverFactory(in_STAppData);
+
+          STAppData = in_STAppData;
+          STAppFrame = in_STAppFrame;
+     STAppFrame.RefreshViewData();
+    
+  STAppData.RefreshData();
+  STAppFrame.UpdateDisplay();
+  RUNWITHGUI = true;
+
+ 
+    this.STAppData.cancelled = false;
+  
+  this.EcTimeout = 10;
+  STAppFrame.showTaskGUI();
+ 
+ setProgressListeners();
+  
+ 
+    
+ }
  
 public RunAllTests (SeleniumTestToolData in_SiteTest)
  {
@@ -61,12 +89,12 @@ popOutFrame = new ProgressFrame(in_SiteTest.short_filename);
  setProgressListeners(popOutFrame);
       
  }
-public synchronized void Pause() {
-    popOutFrame.Pause();
+ public synchronized void Pause() {
+     if (RUNWITHGUI) {  STAppFrame.Pause(); } else {popOutFrame.Pause();}
         this.paused = true;
     }
   public void Continue() {
-   popOutFrame.Continue();
+    if (RUNWITHGUI) {  STAppFrame.Continue();} else {popOutFrame.Continue();}
         this.paused = false;
          synchronized(this) {
             this.notifyAll();
@@ -86,7 +114,79 @@ public synchronized void Pause() {
  }
  
 
+public void setProgressListeners()
+ {
+   STAppFrame.addJButtonCancelActionListener(new ActionListener() {
+    public void actionPerformed (ActionEvent evt) {
 
+     LoudCall<Void, String> procMethod = new LoudCall<Void, String>() {
+            @Override
+            public Void call() throws Exception {
+            shoutOut("cancel");
+                    Thread.sleep(100);
+                    return null;
+                      }
+        };
+      
+       (new ListenerTask<Void, String>(procMethod) {
+            @Override
+            protected void process(List<String> chunks) {
+             STAppData.cancelled = true;
+             STAppFrame.jButtonCancel.setText("Cancelling...");
+             
+            STAppFrame.enablejButtonDoStuff(false);
+           }
+       }).execute();
+       
+   }    
+ });
+   STAppFrame.addJButtonContinueActionListener(new ActionListener() {
+    public void actionPerformed (ActionEvent evt) {
+
+
+     LoudCall<Void, String> procMethod = new LoudCall<Void, String>() {
+            @Override
+            public Void call() throws Exception {
+            shoutOut("continue");
+                    Thread.sleep(100);
+                    return null;
+                      }
+        };
+      
+       (new ListenerTask<Void, String>(procMethod) {
+            @Override
+            protected void process(List<String> chunks) {
+     Continue();
+    
+        
+           }
+       }).execute(); 
+   }    
+ });
+     STAppFrame.addJButtonPauseActionListener(new ActionListener() {
+    public void actionPerformed (ActionEvent evt) {
+
+    LoudCall<Void, String> procMethod = new LoudCall<Void, String>() {
+            @Override
+            public Void call() throws Exception {
+            shoutOut("pause");
+                    Thread.sleep(100);
+                    return null;
+                      }
+        };
+      
+       (new ListenerTask<Void, String>(procMethod) {
+            @Override
+            protected void process(List<String> chunks) {
+ Pause();
+           
+           }
+       }).execute();
+  
+    }
+     });
+        
+ } 
 public void setProgressListeners(ProgressFrame popFrame)
  {
      popFrame.initFrame();
@@ -166,15 +266,30 @@ public String doInBackground()
  {
   
      String ret_val = "";
-  
+    if (RUNWITHGUI)
+    {
+     STAppFrame.clearPassFailColors();
+     STAppFrame.disableAdds();
+     STAppFrame.disableRemoves();
+     STAppFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+     STAppFrame.setRunButtonEnabled(false);
+    
+    }
         if (STAppData.hasSentStoredVars)
      {
        STAppData.PromptForUserVarValues();
      }
      STAppData.testRunning = true;
      
-    
-            RunAllActions(STAppData);
+     if (RUNWITHGUI)
+     {
+        for (ProcedureView thisbugview : STAppFrame.BugViewArray)
+      {
+          thisbugview.JLabelPass.setVisible(false);
+      }
+  
+     }
+            RunAllActions(STAppFrame, STAppData);
   
      
     ret_val = "Run All Procedures";
@@ -186,13 +301,75 @@ public String doInBackground()
  protected void done()
  {
 
-    
+      if (RUNWITHGUI)
+     {
+      STAppData.setSMTPHostname(STAppFrame.getSMTPHostname());
+      STAppData.setEmailLoginName(STAppFrame.getEmailLoginName());
+      STAppData.setEmailPassword(STAppFrame.getEmailPassword());
+      STAppData.setEmailTo(STAppFrame.getEmailTo());
+      STAppData.setEmailFrom(STAppFrame.getEmailFrom());
+      STAppData.setSubject(STAppFrame.getSubject());
+      
+     if (STAppFrame.getjCheckBoxUniqueURLsSelected())
+     {
+      STAppFrame.jButtonClearUniqueList.setEnabled(true);
+     }
+    STAppFrame.enablejButtonDoStuff(true);
+    STAppFrame.enableAdds();
+    STAppFrame.enableRemoves();
+    STAppFrame.hideTaskGUI();
+    STAppFrame.resetRunButtons();
+    STAppFrame.setJTextFieldProgress("");
+  STAppFrame.jButtonCancel.setText("Cancel");
+     }
+    else
+      {
           popOutFrame.mainFrame.dispose();
-   
+      }
    STAppData.testRunning = false; 
    
-   
+    if (RUNWITHGUI)
+     {
+   try
+    {
+     
+       STAppFrame.setCursor(Cursor.getDefaultCursor());   
+    STAppFrame.setRunButtonEnabled(true);
 
+  
+    }
+    catch (Exception ex)
+    {
+      System.out.println("exception setting cursor: " + ex.toString());
+       STAppFrame.setRunButtonEnabled(true);
+    }
+     }
+// complicated close then try/catch stuff doesn't seem to be necessary anymore... 
+ //   boolean closecaught = false;
+   
+// try
+// {
+//   if (driver!=null) {  driver.close(); }
+// }
+// catch (Exception e)
+// {
+   //  closecaught = true;
+   //  System.out.println(e.toString());
+   //  try {
+   //             driver.quit();
+   //         }
+   //         catch (Exception exce)
+   //         {
+               
+   //             System.out.println("Exception quitting" + exce.toString());
+  //          }
+ //}
+// if (closecaught)
+// {
+ 
+// }
+// else
+// {
      try
  {
    if (driver != null) { driver.quit();}
@@ -205,25 +382,97 @@ System.out.println ("Exception when quitting driver: " + ex.toString());
   
 // }
 
-   
+    FillReport();  
+     
+    if (STAppData.getExitAfter())
+    {
+    System.exit(0);
+    }
+  
+      
+    
+     BrowserMatorReport = new BrowserMatorReport(STAppData);
+      if (STAppData.getShowReport())
+       {
      
 
+        if (STAppData.getIncludeScreenshots())
+       {
+       BrowserMatorReport.ShowHTMLReport();
+       }
+       else
+       {
+           BrowserMatorReport.ShowTextReport();
+       }
+      
+     
+       }
+    
+                if (STAppData.getEmailReportFail())
+    {
+        if (STAppData.AllTestsPassed)
+        {
+            
+        }
+        else
+        {
+            BrowserMatorReport.EmailReport();
+        }
+    }
+    if (STAppData.getEmailReport())
+    {
+ 
+        BrowserMatorReport.EmailReport();
+  
+    }
+         if (STAppFrame==null)
+     {
+    
+     System.exit(0);
+      }
+    if (STAppData.getExitAfter())
+    {
     
           
-  //  System.exit(0);
-    
+    System.exit(0);
+    }
   
  }
  
+  
 @Override
  protected void process ( List <Integer> bugindex)
  {
 
-   //nothing here to update, no GUI
+    if (RUNWITHGUI)
+    {
+    STAppFrame.BugViewArray.get(bugindex.get(0)).JButtonRunTest.setText("Run");
+      if (STAppData.BugArray.get(bugindex.get(0)).Pass)
+    {
+      
      
+      STAppFrame.BugViewArray.get(bugindex.get(0)).JLabelPass.setBackground(Color.GREEN);
+      STAppFrame.BugViewArray.get(bugindex.get(0)).JLabelPass.setText("Passed");
+      
+   
+       STAppFrame.BugViewArray.get(bugindex.get(0)).JLabelPass.setVisible(true);
     
+    }
+     else
+     {
+     
+     
+      
+       STAppFrame.BugViewArray.get(bugindex.get(0)).JLabelPass.setBackground(Color.RED);
+       STAppFrame.BugViewArray.get(bugindex.get(0)).JLabelPass.setText("Failed");
+      
+       
+       STAppFrame.BugViewArray.get(bugindex.get(0)).JLabelPass.setVisible(true);
+    
+     }
+    }
  }
-  public void RunAllActions(SeleniumTestToolData STAppData)
+  public void RunAllActions(SeleniumTestTool STAppFrame, SeleniumTestToolData STAppData)
  {
  driver = driverFactory.buildDriver();
  STAppData.TimeOfRun = LocalDateTime.now();
@@ -254,7 +503,29 @@ System.out.println ("Exception when quitting driver: " + ex.toString());
       {
           String bugtitle = STAppData.BugArray.get(thisbugindex).getBugTitle();
    
-          LoudCall<Void, String> procMethod = new LoudCall<Void, String>() {
+       if (RUNWITHGUI)
+       {
+              LoudCall<Void, String> procMethod = new LoudCall<Void, String>() {
+            @Override
+            public Void call() throws Exception {
+            shoutOut(bugtitle);
+                    Thread.sleep(100);
+                    return null;
+                      }
+        };
+          (new ListenerTask<Void, String>(procMethod) {
+            @Override
+            protected void process(List<String> chunks) {
+             STAppFrame.setJTextFieldProgress(chunks.get(chunks.size() - 1));
+            
+             }
+        }).execute();
+
+                   STAppFrame.BugViewArray.get(thisbugindex).JButtonRunTest.setText("Running...");           
+      
+       }
+       else
+       {       LoudCall<Void, String> procMethod = new LoudCall<Void, String>() {
             @Override
             public Void call() throws Exception {
             shoutOut(bugtitle);
@@ -269,7 +540,7 @@ System.out.println ("Exception when quitting driver: " + ex.toString());
             
              }
         }).execute();
-       
+       }
    int bug_INT = thisbugindex+1;
   String bug_ID = Integer.toString(bug_INT);
 
@@ -299,7 +570,30 @@ if (!"Dataloop".equals(thisbug.Type))
            if (!ThisAction.Locked)
    {
          ThisAction.setEcTimeout(EcTimeout);
-       String action_title = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2;
+       if (RUNWITHGUI)
+       {
+          String action_title = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2;
+               LoudCall<Void, String> actMethod = new LoudCall<Void, String>() {
+            @Override
+            public Void call() throws Exception {
+            shoutOut(action_title);
+                    Thread.sleep(100);
+                    return null;
+                      }
+        };
+          (new ListenerTask<Void, String>(actMethod) {
+            @Override
+            protected void process(List<String> chunks) {
+                if (chunks.size()>0)
+                {
+             STAppFrame.setJTextFieldProgress(chunks.get(chunks.size() - 1));
+                }
+          
+            }
+        }).execute();
+       }
+       else
+       {   String action_title = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2;
                LoudCall<Void, String> actMethod = new LoudCall<Void, String>() {
             @Override
             public Void call() throws Exception {
@@ -318,7 +612,7 @@ if (!"Dataloop".equals(thisbug.Type))
           
             }
         }).execute();
-       
+       }
        if (totalpause>0)
        {
       try
@@ -329,7 +623,12 @@ if (!"Dataloop".equals(thisbug.Type))
   {
       System.out.println ("Exception when sleeping: " + ex.toString());
        ThisAction.Pass = false;
-      
+       if (RUNWITHGUI)
+       {
+           ProcedureView thisbugview = STAppFrame.BugViewArray.get(thisbugindex);
+        thisbugview.ActionsViewList.get(ThisAction.index).setPassState(ThisAction.Pass);
+            publish(thisbugindex);
+       }
           break;
         
   }
@@ -388,7 +687,11 @@ if (!"Dataloop".equals(thisbug.Type))
                  {
                      ThisAction.RunAction(driver);
                  }
-               
+                 if (RUNWITHGUI)
+                 {
+                     ProcedureView thisbugview = STAppFrame.BugViewArray.get(thisbugindex);
+                  thisbugview.ActionsViewList.get(ThisAction.index).setPassState(ThisAction.Pass);
+                 }
               
        }
        
@@ -435,7 +738,11 @@ if (!"Dataloop".equals(thisbug.Type))
              ThisAction.Pass = true; 
            
            }
-          
+           if (RUNWITHGUI)
+           {
+                 ProcedureView thisbugview = STAppFrame.BugViewArray.get(thisbugindex);
+            thisbugview.ActionsViewList.get(ThisAction.index).setPassState(ThisAction.Pass);
+           }
    }  
    int actionspassed = 0;
  for (BMAction thisaction: thisbug.ActionsList)
@@ -501,7 +808,15 @@ else
       number_of_rows = thisbug.URLListRunTimeEntries.size();
       }
      
-       
+      if (RUNWITHGUI)
+      {
+          if (number_of_rows>0)
+          {
+            ProcedureView thisbugview = STAppFrame.BugViewArray.get(thisbugindex);
+      thisbugview.setJTableSourceToURLList(thisbug.URLListRunTimeEntries, thisbug.URLListName);
+          }
+      }
+    
     }
     else
     {
@@ -601,7 +916,11 @@ else
          System.out.println ("Exception when sleeping: " + ex.toString());
        ThisAction.Pass = false;
             publish(thisbugindex);
-          
+            if (RUNWITHGUI)
+            {
+                  ProcedureView thisbugview = STAppFrame.BugViewArray.get(thisbugindex);
+             thisbugview.ActionsViewList.get(ThisAction.index).setPassState(ThisAction.Pass);
+            }
           break;
   }
        }
@@ -624,7 +943,28 @@ else
          ThisAction.Variable2 = STAppData.GetStoredVariableValue(fieldname);
         String action_title3 = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2; 
                   
+        if (RUNWITHGUI)
+        {
         LoudCall<Void, String> actMethod = new LoudCall<Void, String>() {
+            @Override
+            public Void call() throws Exception {
+            shoutOut(action_title3);
+                    Thread.sleep(100);
+                    return null;
+                      }
+        };
+          (new ListenerTask<Void, String>(actMethod) {
+            @Override
+            protected void process(List<String> chunks) {
+                if (chunks.size()>0)
+                {
+             STAppFrame.setJTextFieldProgress(chunks.get(chunks.size() - 1));
+                }
+            }
+        }).execute();
+        }
+        else
+        {   LoudCall<Void, String> actMethod = new LoudCall<Void, String>() {
             @Override
             public Void call() throws Exception {
             shoutOut(action_title3);
@@ -641,7 +981,7 @@ else
                 }
             }
         }).execute();
-        
+        }
      
           ThisAction.RunAction(driver);
           ThisAction.Variable2 = "[stored_varname-start]"+fieldname+"[stored_varname-end]";
@@ -660,7 +1000,28 @@ else
       
          ThisAction.Variable1 = STAppData.GetStoredVariableValue(fieldname);
        
-           String action_title2 = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2;
+         if (RUNWITHGUI)
+         {
+              String action_title2 = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2;
+        LoudCall<Void, String> actMethod = new LoudCall<Void, String>() {
+            @Override
+            public Void call() throws Exception {
+            shoutOut(action_title2);
+                    Thread.sleep(100);
+                    return null;
+                      }
+        };
+          (new ListenerTask<Void, String>(actMethod) {
+            @Override
+            protected void process(List<String> chunks) {
+                if (chunks.size()>0)
+                {
+            STAppFrame.setJTextFieldProgress(chunks.get(chunks.size() - 1));
+                }
+            }
+        }).execute();
+         }
+         else {       String action_title2 = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2;
         LoudCall<Void, String> actMethod = new LoudCall<Void, String>() {
             @Override
             public Void call() throws Exception {
@@ -678,7 +1039,7 @@ else
                 }
             }
         }).execute();
-         
+         }
       
           ThisAction.RunAction(driver);
           ThisAction.Variable1 = "[stored_varname-start]"+fieldname+"[stored_varname-end]";
@@ -689,7 +1050,29 @@ else
        
        else
        {
-            String action_title = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2;
+           if (RUNWITHGUI)
+           {
+              String action_title = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2;
+            
+              LoudCall<Void, String> actMethod = new LoudCall<Void, String>() {
+            @Override
+            public Void call() throws Exception {
+            shoutOut(action_title);
+                    Thread.sleep(100);
+                    return null;
+                      }
+        };
+          (new ListenerTask<Void, String>(actMethod) {
+            @Override
+            protected void process(List<String> chunks) {
+                if (chunks.size()>0)
+                {
+             STAppFrame.setJTextFieldProgress(chunks.get(chunks.size() - 1));
+                }
+            }
+        }).execute();   
+           }
+           else {    String action_title = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2;
             
               LoudCall<Void, String> actMethod = new LoudCall<Void, String>() {
             @Override
@@ -708,7 +1091,7 @@ else
                 }
             }
         }).execute();   
-           
+           }
       
          ThisAction.RunAction(driver);    
        }   
@@ -728,7 +1111,12 @@ else
           ThisAction.loop_pass_values.set(x,false);
           ThisAction.loop_time_of_test.set(x, LocalDateTime.now());
         
-            
+             if (RUNWITHGUI)
+             {
+               publish(thisbugindex);
+                 ProcedureView thisbugview = STAppFrame.BugViewArray.get(thisbugindex);
+                thisbugview.ActionsViewList.get(ThisAction.index).setPassState(ThisAction.loop_pass_values.get(x));
+             }
           break;
        
      }
@@ -808,11 +1196,38 @@ else
     
          System.out.println ("Exception when sleeping: " + ex.toString());
        ThisAction.Pass = false;
-      
+       if (RUNWITHGUI)
+       {
+            publish(thisbugindex);
+              ProcedureView thisbugview = STAppFrame.BugViewArray.get(thisbugindex);
+             thisbugview.ActionsViewList.get(ThisAction.index).setPassState(ThisAction.loop_pass_values.get(x));
+       }
           break;
   }
                  }
-                     String action_title = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2;
+                 if (RUNWITHGUI)
+                 {
+                      String action_title = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2;
+             LoudCall<Void, String> actMethod = new LoudCall<Void, String>() {
+            @Override
+            public Void call() throws Exception {
+            shoutOut(action_title);
+                    Thread.sleep(100);
+                    return null;
+                      }
+        };
+          (new ListenerTask<Void, String>(actMethod) {
+            @Override
+            protected void process(List<String> chunks) {
+                if (chunks.size()>0)
+                {
+             STAppFrame.setJTextFieldProgress(chunks.get(chunks.size() - 1));
+                }
+            }
+        }).execute();   
+                 }
+                 else
+                 {           String action_title = ThisAction.Type + ": " + ThisAction.Variable1 + " " + ThisAction.Variable2;
              LoudCall<Void, String> actMethod = new LoudCall<Void, String>() {
             @Override
             public Void call() throws Exception {
@@ -830,7 +1245,7 @@ else
                 }
             }
         }).execute();   
-                 
+                 }
        
       ThisAction.RunAction(driver);
 
@@ -865,7 +1280,13 @@ else
        ThisAction.Variable2 = original_value2;
        ThisAction.loop_pass_values.set(x, false);
         ThisAction.loop_time_of_test.set(x, LocalDateTime.now());
-      
+        if (RUNWITHGUI)
+        {
+              ProcedureView thisbugview = STAppFrame.BugViewArray.get(thisbugindex);
+         thisbugview.ActionsViewList.get(ThisAction.index).setPassState(ThisAction.loop_pass_values.get(x));
+  
+               publish(thisbugindex);
+        }
           break;
        
      }
@@ -879,7 +1300,11 @@ else
         ThisAction.loop_time_of_test.set(x,ThisAction.TimeOfTest);
             
       }
-    
+       if (RUNWITHGUI)
+        {
+              ProcedureView thisbugview = STAppFrame.BugViewArray.get(thisbugindex);
+      thisbugview.ActionsViewList.get(ThisAction.index).setPassState(ThisAction.loop_pass_values.get(x));
+        }
      }
  
              if (changex!=x)
@@ -1010,14 +1435,43 @@ while(thisContinuePrompt.isVisible() == true){
      if (RunAgain)
     {
       RunAgain=false;  
-  
+      if (RUNWITHGUI)
+    {
+     STAppFrame.clearPassFailColors();
+     STAppFrame.disableAdds();
+     STAppFrame.disableRemoves();
+     STAppFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+     STAppFrame.setRunButtonEnabled(false);
+    
+    }
         if (STAppData.hasSentStoredVars)
      {
        STAppData.PromptForUserVarValues();
      }
      STAppData.testRunning = true;
      
-   
+     if (RUNWITHGUI)
+     {
+  
+ BrowsermatorAppFolder =   System.getProperty("user.home")+File.separator+"BrowsermatorAppFolder"+File.separator;
+ 
+        
+     STAppFrame.RefreshViewData();
+    
+  STAppData.RefreshData();
+  STAppFrame.UpdateDisplay();
+  RUNWITHGUI = true;
+ 
+  
+    this.STAppData.cancelled = false;
+ 
+  STAppFrame.jButtonCancel.setText("Cancel");
+  STAppFrame.showTaskGUI();
+
+ setProgressListeners();
+     }
+     else
+     {
           
       BrowsermatorAppFolder =   System.getProperty("user.home")+File.separator+"BrowsermatorAppFolder"+File.separator;
  
@@ -1034,17 +1488,17 @@ while(thisContinuePrompt.isVisible() == true){
    popOutFrame.mainFrame.dispose();
    popOutFrame = new ProgressFrame(STAppData.short_filename);
  setProgressListeners(popOutFrame);
-     
+     }
      try
      {
-       Thread.sleep(5000);  
+       Thread.sleep(10000);  
      }
      catch (Exception ex)
      {
        System.out.println ("Exception while sleeping before runagain:" + ex.toString());  
      }
       
-        RunAllActions( STAppData);
+        RunAllActions(STAppFrame, STAppData);
        
     }  
      

@@ -1,4 +1,5 @@
 package thebrowserbots.com;
+
 import java.io.Serializable;
 import java.util.*;
 import javax.swing.*;

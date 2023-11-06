@@ -6,8 +6,10 @@
 package thebrowserbots.com;
 
 import java.util.HashMap;
-
-
+/**
+ *
+ * @author pcalkins
+ */
 public class UserParamHash {
   HashMap<String, String> UserParamHashMap;  
 

@@ -132,7 +132,57 @@ public class ActionsMaster {
         }
         return retVal;
     }
-  
+      public ActionView CreatePassFailActionView (String actionKey)
+    {
+          ActionView retVal =new YesNoPromptPassFailActionView();
+        
+        switch (actionKey){
+          
+            case "Yes/No Prompt":
+                  retVal = new YesNoPromptPassFailActionView();
+                  break;
+            case "Find Text":
+                retVal = new FindTextPassFailActionView();
+                break;
+            case "Find HREF":
+                retVal = new FindHREFPassFailActionView();
+                break;
+            case "Find IFrame SRC":
+                retVal = new FindIFrameSRCPassFailActionView();
+                break;
+            case "Find Image SRC":
+                retVal = new FindImageSRCPassFailActionView();
+                break;
+            case "Find Page Title":
+                retVal = new FindPAGETITLEPassFailActionView();
+                break;
+            case "Find XPATH":
+                retVal = new FindXPATHPassFailActionView();
+                break;
+            case "Do NOT Find Text":
+                retVal = new NOTFindTextPassFailActionView();
+                break;
+            case "Do NOT Find HREF":
+                retVal = new NOTFindHREFPassFailActionView();
+                break;
+            case "Do NOT Find IFrame SRC":
+                retVal = new NOTFindIFrameSRCPassFailActionView();
+                break;
+            case "Do NOT Find Image SRC":
+                retVal = new NOTFindImageSRCPassFailActionView();
+                break;
+            case "Do NOT Find Page Title":
+                retVal = new NOTFindPAGETITLEPassFailActionView();
+                break;
+            case "Do NOT Find XPATH":
+                retVal = new NOTFindXPATHPassFailActionView();
+                break;
+                  default:
+                System.out.println("KEY ACTION PASS FAIL VIEW NOT FOUND");
+                break;
+        }
+        return retVal;
+    }
     public BMAction CreateAction(String actionKey)
     {
         BMAction retVal = new BackAction();
@@ -268,5 +318,138 @@ public class ActionsMaster {
     
       return retVal;  
     }
-  
+    public ActionView CreateActionView (String actionKey)
+    {
+        ActionView retVal = new BackActionView();
+    switch (actionKey){
+          
+            case "Back Button":
+                   retVal = new BackActionView();
+                   break;  
+            case "Click at Button Text":
+                retVal = new ClickAtButtonTextActionView();
+                break;
+            case "Click at HREF":
+                retVal = new ClickAtHREFActionView();
+                break;
+            case "Click at ID":
+                retVal = new ClickAtIDActionView();
+                break;
+            case "Click at Image SRC":
+                retVal = new ClickAtImageSRCActionView();
+                break;
+            case "Click at Link Text":
+                retVal = new ClickAtLinkTextActionView();
+                break;
+                
+            case "Click at Name":
+                retVal = new ClickAtNameActionView();
+                break;
+            case "Click at XPATH":
+                retVal = new ClickXPATHActionView();
+                break;
+            case "Close Current Tab or Window":
+                retVal = new CloseCurrentTabOrWindowActionView();
+                break;
+            case "Down Arrow Key":
+                retVal = new DownArrowKeyActionView();
+                break;
+            case "Drag From ID to ID":
+                retVal = new DragAndDropActionView();
+                break;
+            case "Drag From XPATH Distance X and Y Pixels":
+                retVal = new DragAndDropByActionView();
+                break;
+            case "Enter Key":
+                retVal = new EnterKeyActionView();
+                break;
+            case "Escape Key":
+                retVal = new EscapeKeyActionView();
+                break;
+            case "Execute Javascript":
+                retVal = new ExecuteJavascriptActionView();
+                break;
+            case "Forward Action":
+                retVal = new ForwardActionView();
+                break;
+            case "Go to URL":
+                retVal = new GoActionView();
+                break;
+            case "Left Arrow Key":
+                retVal = new LeftArrowKeyActionView();
+                break;
+            case "Next Tab":
+                retVal = new NextTabActionView();
+                break;
+            case "Open New Tab":
+                retVal = new OpenNewTabActionView();
+                break;
+            case "Paste at XPATH":
+                retVal = new PasteAtXPATHActionView();
+                break;
+             case "Paste Password at XPATH":
+                retVal = new PastePasswordAtXPATHActionView();
+                break;
+            case "Pause":
+                retVal = new PauseActionView();
+                break;
+            case "Pause with Continue Button":
+                retVal = new PauseContinueActionView();
+                break;
+            case "Right Arrow Key":
+                retVal = new RightArrowKeyActionView();
+                break;
+            case "Right-Click":
+                retVal = new RightClickActionView();
+                break;
+            case "Set Cookie":
+                retVal = new SetCookieActionView();
+                break;
+            case "Store Link as Variable by XPATH":
+                retVal = new StoreLinkAsVarByXPATHActionView();
+                break;
+            case "Store Links as URL List by XPATH":
+                retVal = new StoreLinksAsArrayByXPATHActionView();
+                break;
+            case "Switch Driver":
+                retVal = new SwitchDriverActionView();
+                break;
+            case "Switch To Frame":
+                retVal = new SwitchToFrameActionView();
+                break;
+            case "Switch To Tab or Window":
+                retVal = new SwitchToTabOrWindowActionView();
+                break;
+  //legacy support for Type at ID
+            case "Type at ID":
+                retVal = new TypeAtIDActionView();
+                break;
+            case "Type at Input ID":
+                retVal = new TypeAtIDActionView();
+                break;
+            case "Type at Input Name":
+                retVal = new TypeAtInputNameActionView();
+                break;
+            case "Type at XPATH":
+                retVal = new TypeAtXPATHActionView();
+                break;
+            case "Type Password at ID":
+                retVal = new TypePasswordAtIDActionView();
+                break;
+            case "Type Password at Input Name":
+                retVal = new TypePasswordAtInputNameActionView();
+                break;
+            case "Type Password at XPATH":
+                retVal = new TypePasswordAtXPATHActionView();
+                break;
+            case "Up Arrow Key":
+                retVal = new UpArrowKeyActionView();
+                break;
+            default:
+                System.out.println("KEY ACTIONVIEW NOT FOUND");
+                break;
+        }
+    return retVal; 
+        
+    }
 }

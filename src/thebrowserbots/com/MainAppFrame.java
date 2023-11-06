@@ -71,7 +71,31 @@ public class MainAppFrame extends JFrame {
  {
      aboutMenuItem.addActionListener(listener);
  }
- 
+  public void setWindowProps(BrowserMatorConfig _appConfig)
+          {
+              appConfig = _appConfig;
+              newProps = appConfig.applicationProps;
+                int winLocY =  Integer.parseInt(newProps.getProperty("main_window_locationY", "0"));
+   int winLocX =   Integer.parseInt(newProps.getProperty("main_window_locationX", "0"));
+   int winWidth =  Integer.parseInt(newProps.getProperty("main_window_sizeWidth", "1200"));
+   int winHeight = Integer.parseInt(newProps.getProperty("main_window_sizeHeight", "802"));
+      java.awt.Point startPosition = new java.awt.Point(winLocX, winLocY);
+            if (isLocationInScreenBounds(startPosition) )
+        {
+
+        super.setLocation(startPosition);
+        super.setSize(winWidth, winHeight);
+        }
+       
+      else
+      {
+  int Width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+int Height = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+super.setSize(Width-300,Height-300);
+      super.setLocation(0,0);
+    super.setExtendedState( super.getExtendedState()|JFrame.MAXIMIZED_BOTH );
+      }
+          }
     public static boolean isLocationInScreenBounds(Point location) 
     {
       

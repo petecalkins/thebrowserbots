@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package thebrowserbots.com;
+
 import java.util.ArrayList;
 import org.openqa.selenium.WebDriver;
 

@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package thebrowserbots.com;
+
 import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import javax.swing.JPanel;

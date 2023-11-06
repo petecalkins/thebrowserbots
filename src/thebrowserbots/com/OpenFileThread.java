@@ -5,13 +5,14 @@
  */
 package thebrowserbots.com;
 
-
+import java.awt.Cursor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,8 +29,9 @@ import org.xml.sax.SAXException;
  */
 public class OpenFileThread extends SwingWorker<String, Integer>{
 File file;
-
+SeleniumTestTool STAppFrame;
 SeleniumTestToolData STAppData;
+ArrayList<SeleniumTestTool> MDIViewClasses;
 ArrayList<SeleniumTestToolData> MDIDataClasses;
 MainAppFrame mainAppFrame;
 STAppController mainAppController;
@@ -61,50 +63,75 @@ public OpenFileThread(STAppController in_mainAppController, File in_file, ArrayL
    file = in_file;
  
 }
- 
-    public OpenFileThread(STAppController in_mainAppController, File file, ArrayList<SeleniumTestToolData> MDIDataClasses, int calling_MDI_Index, boolean isFlatten, boolean RunIt)
+   public OpenFileThread(STAppController in_mainAppController, MainAppFrame in_mainAppFrame, File file, ArrayList<SeleniumTestTool> MDIViewClasses, ArrayList<SeleniumTestToolData> MDIDataClasses, int calling_MDI_Index, boolean isFlatten, boolean RunIt, List<String[]> mapEntries)
 {
   this.isFlatten = isFlatten;
- 
+  this.mainAppFrame = in_mainAppFrame;
   this.mainAppController = in_mainAppController;
   this.file = file;
-  this.MDIDataClasses = MDIDataClasses;
-  this.calling_MDI_Index = calling_MDI_Index;
-  this.RunIt = RunIt;
-}
-   public OpenFileThread(STAppController in_mainAppController, File file, ArrayList<SeleniumTestToolData> MDIDataClasses, int calling_MDI_Index, boolean isFlatten, boolean RunIt, boolean fromCloud, List<String[]> mapEntries)
-{
-    this.fromCloud = fromCloud;
-  this.isFlatten = isFlatten;
-
-   this.mainAppController = in_mainAppController;
-  this.file = file;
-
+  this.MDIViewClasses = MDIViewClasses;
   this.MDIDataClasses = MDIDataClasses;
   this.calling_MDI_Index = calling_MDI_Index;
   this.RunIt = RunIt;
     hasMap = true;
   theseMapEntries = mapEntries;
 }
-      public OpenFileThread(STAppController in_mainAppController, File file, ArrayList<SeleniumTestToolData> MDIDataClasses, boolean isFlatten, boolean RunIt, boolean fromCloud)
+    public OpenFileThread(STAppController in_mainAppController, MainAppFrame in_mainAppFrame, File file, ArrayList<SeleniumTestTool> MDIViewClasses, ArrayList<SeleniumTestToolData> MDIDataClasses, int calling_MDI_Index, boolean isFlatten, boolean RunIt)
+{
+  this.isFlatten = isFlatten;
+  this.mainAppFrame = in_mainAppFrame;
+  this.mainAppController = in_mainAppController;
+  this.file = file;
+  this.MDIViewClasses = MDIViewClasses;
+  this.MDIDataClasses = MDIDataClasses;
+  this.calling_MDI_Index = calling_MDI_Index;
+  this.RunIt = RunIt;
+}
+   public OpenFileThread(STAppController in_mainAppController, MainAppFrame in_mainAppFrame, File file, ArrayList<SeleniumTestTool> MDIViewClasses, ArrayList<SeleniumTestToolData> MDIDataClasses, int calling_MDI_Index, boolean isFlatten, boolean RunIt, boolean fromCloud, List<String[]> mapEntries)
 {
     this.fromCloud = fromCloud;
   this.isFlatten = isFlatten;
+  this.mainAppFrame = in_mainAppFrame;
    this.mainAppController = in_mainAppController;
   this.file = file;
- 
+  this.MDIViewClasses = MDIViewClasses;
   this.MDIDataClasses = MDIDataClasses;
-   this.RunIt = RunIt;
+  this.calling_MDI_Index = calling_MDI_Index;
+  this.RunIt = RunIt;
+    hasMap = true;
+  theseMapEntries = mapEntries;
+}
+      public OpenFileThread(STAppController in_mainAppController, MainAppFrame in_mainAppFrame, File file, ArrayList<SeleniumTestTool> MDIViewClasses, ArrayList<SeleniumTestToolData> MDIDataClasses, int calling_MDI_Index, boolean isFlatten, boolean RunIt, boolean fromCloud)
+{
+    this.fromCloud = fromCloud;
+  this.isFlatten = isFlatten;
+  this.mainAppFrame = in_mainAppFrame;
+   this.mainAppController = in_mainAppController;
+  this.file = file;
+  this.MDIViewClasses = MDIViewClasses;
+  this.MDIDataClasses = MDIDataClasses;
+  this.calling_MDI_Index = calling_MDI_Index;
+  this.RunIt = RunIt;
 }
 @Override 
 public String doInBackground()
  {
 
-  
+   if (hasGUI)
+   {
+      mainAppController.Navigator.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+   }
     try {
         int MDI_CLASS_INDEX;
            MDI_CLASS_INDEX = OpenFile();
-       
+         if (MDI_CLASS_INDEX>=0)
+     {
+         if (hasGUI)
+         {
+           mainAppController.DisplayWindow(MDI_CLASS_INDEX);
+         }
+           
+     }
        }
        catch (IOException | ClassNotFoundException ex) {
           System.out.println("error opening file: " + ex.toString());
@@ -125,7 +152,34 @@ public String doInBackground()
    else
    {
        
+     if (hasGUI)
+     {
+       
+  mainAppController.Navigator.setCursor(Cursor.getDefaultCursor()); 
+   
  
+  if (last_index>-1)
+  {
+       if (hasMap)
+    {
+  
+   
+        mainAppController.ApplyMap(theseMapEntries, MDIViewClasses.get(last_index), MDIDataClasses.get(last_index));
+   
+    }
+     MDIViewClasses.get(last_index).UpdateDisplay();
+ 
+  }
+  if (isFlatten)
+  {
+  MDIViewClasses.get(calling_MDI_Index).setFlattenFileButtonName ("Flatten to New File");
+  }
+   if (fromCloud)
+   {
+    MDIDataClasses.get(last_index).setIsTemplateOrNew(true);   
+   }
+ 
+     } 
        if (RunIt)
   {
       if (hasGUI)
@@ -134,11 +188,11 @@ public String doInBackground()
     {
   
     if (last_index>-1) {  
-        mainAppController.ApplyMap(theseMapEntries,  MDIDataClasses.get(last_index));
+        mainAppController.ApplyMap(theseMapEntries, MDIViewClasses.get(last_index), MDIDataClasses.get(last_index));
     }
     }
  
-    if (last_index>-1) {    mainAppController.RunActions( MDIDataClasses.get(last_index));
+    if (last_index>-1) {    mainAppController.RunActions(MDIViewClasses.get(last_index), MDIDataClasses.get(last_index));
     }
       }
     else
@@ -178,17 +232,24 @@ public String doInBackground()
     {
    
   
-          String full_filename="";
+        
 if(!file.exists()) { 
  return -10;
  
 }
 else
 {
-  
+    String full_filename;
     if (this.fromCloud)
     {
-       
+        if (MDIViewClasses.size()>0)
+        {
+       full_filename = file.getName() + "-untitled" + MDIViewClasses.size();
+        }
+        else
+        {
+          full_filename = file.getName() + "-untitled";   
+        }
         }
     else
     {
@@ -202,7 +263,26 @@ int MDI_Index = -1;
     
      int alreadyopen_index = -1;
      int thisfile_index = 0;
-  
+     if (hasGUI)
+     {
+     for (SeleniumTestTool thisfile: MDIViewClasses)
+     {
+         
+        String twoslashes = File.separator + File.separator;
+        
+         String thisfilename = thisfile.filename.replace(twoslashes, File.separator);
+        String browsedfile = file.getAbsolutePath();
+        
+                
+         if (browsedfile.equals(thisfilename))
+         {   
+           alreadyopen_index = thisfile_index;
+             PromptForSameFileName = true;
+          
+         }
+         thisfile_index++;
+     }
+     }
      if (PromptForSameFileName==false)
     {
 
@@ -231,7 +311,10 @@ finally
  
    BuildNewWindow(doc, full_filename);
    STAppData.setFilenames(full_filename);
- 
+ if (hasGUI)
+ {
+  STAppFrame.setFilenames();
+ }
 
   if (this.fromCloud)
   {
@@ -239,11 +322,124 @@ finally
   }
   else
   {
-    
+      if (hasGUI)
+      {
+   mainAppController.Navigator.addRecentFile(full_filename);
+      }
   }
   
+if (hasGUI)
+{
+STAppData.AllFieldValues.clear();
+STAppData.AllFieldValues.add(STAppData.getOSType());
+STAppData.AllFieldValues.add(STAppData.getTargetBrowser());
+STAppData.AllFieldValues.add(STAppData.getWaitForLoad());
+STAppData.AllFieldValues.add(STAppData.getPromptBehavior());
+String stringWaitTime = String.valueOf(STAppData.getWaitTime());
+STAppData.AllFieldValues.add(stringWaitTime);
+String stringEcTimeout =  String.valueOf(STAppData.getEcTimeout());
+STAppData.AllFieldValues.add(stringEcTimeout);
+String stringSessions = String.valueOf(STAppData.getSessions());
+STAppData.AllFieldValues.add(stringSessions);
+STAppData.AllFieldValues.add(STAppData.getSMTPHostname());
+STAppData.AllFieldValues.add(STAppData.getEmailFrom());
+STAppData.AllFieldValues.add(STAppData.getEmailLoginName());
+STAppData.AllFieldValues.add(STAppData.getEmailPassword());
+STAppData.AllFieldValues.add(STAppData.getEmailTo());
+STAppData.AllFieldValues.add(STAppData.getEmailSubject());
 
+String thisbool = "false";
+if (STAppData.getEmailReport())
+{
+    thisbool = "true";
+}
+STAppData.AllFieldValues.add(thisbool);
 
+thisbool = "false";
+if (STAppData.getEmailReportFail())
+{
+    thisbool = "true";
+}
+
+STAppData.AllFieldValues.add(thisbool);
+thisbool = "false";
+if (STAppData.getExitAfter())
+{
+    thisbool = "true";
+}
+STAppData.AllFieldValues.add(thisbool);
+thisbool = "false";
+if (STAppData.getPromptToClose())
+{
+    thisbool = "true";
+}
+STAppData.AllFieldValues.add(thisbool);
+thisbool = "false";
+if (STAppData.getShowReport())
+{
+    thisbool = "true";
+}
+STAppData.AllFieldValues.add(thisbool);
+thisbool = "false";
+if (STAppData.getIncludeScreenshots())
+{
+    thisbool = "true";
+}
+STAppData.AllFieldValues.add(thisbool);
+thisbool = "false";
+if (STAppData.getUniqueList())
+{
+    thisbool = "true";
+}
+
+STAppData.AllFieldValues.add(thisbool);
+
+STAppData.AllFieldValues.add(STAppData.getUniqueFileOption());
+for (Procedure thisproc: STAppData.BugArray)
+{
+    STAppData.AllFieldValues.add(thisproc.BugTitle);
+    STAppData.AllFieldValues.add(thisproc.DataFile);
+      String randboolval = "false";
+    if (thisproc.random)
+    {
+        randboolval = "true";
+    }
+    
+    STAppData.AllFieldValues.add(randboolval);
+ 
+    String limitstring = Integer.toString(thisproc.limit);
+    STAppData.AllFieldValues.add(limitstring);
+    for (BMAction thisact: thisproc.ActionsList)
+    {
+        String checkingboolval1 = "false";
+        String checkingboolval2 = "false";
+        String checkingboolval3 = "false";
+        STAppData.AllFieldValues.add(thisact.Variable1);
+
+        STAppData.AllFieldValues.add(thisact.Variable2);
+        if (thisact.BoolVal1)
+        {
+            checkingboolval1 = "true";
+        }
+         STAppData.AllFieldValues.add(checkingboolval1);
+         if (thisact.BoolVal2)
+        {
+            checkingboolval2 = "true";
+        }
+        STAppData.AllFieldValues.add(checkingboolval2);
+          if (thisact.Locked)
+        {
+            checkingboolval3 = "true";
+        }
+        STAppData.AllFieldValues.add(checkingboolval3);
+        
+    }
+}
+}
+ if (hasGUI)
+ {
+ MDIViewClasses.add(STAppFrame);
+ }
    MDIDataClasses.add(STAppData);
    MDI_Index =  MDIDataClasses.size()-1;
 
@@ -253,7 +449,30 @@ finally
     }
    else
      {
-      
+         if (hasGUI)
+         {
+         if (mainAppController.MDIViewClasses.get(alreadyopen_index).isIcon())
+         {
+             try
+             {
+             mainAppController.MDIViewClasses.get(alreadyopen_index).setMaximum(true);
+             }
+             catch (Exception ex)
+             {
+                 System.out.println("Exception maximizing window: " + ex.toString());
+             }
+         }
+         mainAppController.MDIViewClasses.get(alreadyopen_index).moveToFront();
+         try
+         {
+         mainAppController.MDIViewClasses.get(alreadyopen_index).setSelected(true);
+         }
+         catch(Exception ex)
+         {
+             System.out.println("Exception selecting window: " + ex.toString());
+             
+         }
+         }
 //  mainApp.DisplayWindow(alreadyopen_index);
  //   JOptionPane.showMessageDialog (null, filealreadyopen + " is already open", "File is open", JOptionPane.INFORMATION_MESSAGE);
                                
@@ -279,7 +498,16 @@ finally
 
 
   STAppData.setFilenames(full_filename);
+  if (hasGUI)
+  {
+  STAppFrame = new SeleniumTestTool(STAppData);
  
+    STAppFrame.setResizable(true);
+  STAppFrame.setClosable(true);
+  STAppFrame.setMaximizable(true);
+
+ 
+  }
   NodeList FileSettingsNode = doc.getElementsByTagName("FileSettings");
  
   String thisSettingsNodeName;
@@ -461,8 +689,7 @@ try
  EmailPassword = thisSettingsNodeValue;
   try
    {
-          String machineID="Peanuts";
-  //     machineID = this.mainAppController.appConfig.ReturnMachineSerialNumber();
+          String machineID = this.mainAppController.appConfig.ReturnMachineSerialNumber();
    unepassword = Protector.decryptLocal(EmailPassword, machineID);
    }
    catch (GeneralSecurityException | IOException e)
@@ -517,6 +744,7 @@ for (int i = 0; i < ProcedureList.getLength(); ++i)
 {
     
    Procedure newbug = new Procedure();
+   ProcedureView newbugview = new ProcedureView();
  
    
     Element Procedure = (Element) ProcedureList.item(i);
@@ -553,12 +781,22 @@ for (int i = 0; i < ProcedureList.getLength(); ++i)
         if ("file".equals(DataLoopSource))
         {
         File DataFile_file = new File(DataFile);
-   
+    if (hasGUI)
+    {
+   STAppFrame.AddNewDataLoopFileView(DataFile_file);
+    }   
    STAppData.AddNewDataLoopFile(DataFile_file);
 
     int last_added_bug_index = STAppData.BugArray.size()-1;
      newbug = STAppData.BugArray.get(last_added_bug_index);
-
+    if (hasGUI)
+    {
+  newbugview = STAppFrame.BugViewArray.get(last_added_bug_index);
+   newbugview.populateJComboBoxStoredArrayLists(STAppData.VarLists);
+     mainAppController.AddNewHandlers(STAppFrame, STAppData, newbugview, newbug);
+ 
+ 
+    }
   
 
     
@@ -571,7 +809,15 @@ for (int i = 0; i < ProcedureList.getLength(); ++i)
           STAppData.AddNewDataLoopURLList(DataFile);
            int last_added_bug_index = STAppData.BugArray.size()-1;
            newbug = STAppData.BugArray.get(last_added_bug_index);
-    
+         if (hasGUI)
+         {
+                STAppFrame.AddNewDataLoopURLListView(DataFile);
+                  newbugview = STAppFrame.BugViewArray.get(last_added_bug_index);
+                    newbugview.populateJComboBoxStoredArrayLists(STAppData.VarLists);
+                      mainAppController.AddNewHandlers(STAppFrame, STAppData, newbugview, newbug);
+        //              STAppFrame.UpdateDisplay();
+   
+         }
   
   
    
@@ -592,13 +838,19 @@ for (int i = 0; i < ProcedureList.getLength(); ++i)
     }
    
     STAppData.BugArray.get(i).setRandom(Rand);
-   
+    if (hasGUI)
+    {
+    STAppFrame.BugViewArray.get(i).setRandom(Rand);
+    }
   }
     if (Procedure.hasAttribute("Limit"))
   {
     int limit = Integer.parseInt(Procedure.getAttribute("Limit"));
     STAppData.BugArray.get(i).setLimit(limit);
-   
+     if (hasGUI)
+    {
+    STAppFrame.BugViewArray.get(i).setLimit(limit);
+    }
   }
     }
     else
@@ -606,7 +858,14 @@ for (int i = 0; i < ProcedureList.getLength(); ++i)
      STAppData.AddNewBug(); 
      int last_added_bug_index = STAppData.BugArray.size()-1;
       newbug = STAppData.BugArray.get(last_added_bug_index);
-   
+      if (hasGUI)
+    {
+    STAppFrame.AddNewBugView();  
+    newbugview = STAppFrame.BugViewArray.get(last_added_bug_index);
+      mainAppController.AddNewHandlers(STAppFrame, STAppData, newbugview, newbug);
+  //     STAppFrame.UpdateDisplay();
+
+    }
        
       
  
@@ -617,7 +876,10 @@ for (int i = 0; i < ProcedureList.getLength(); ++i)
         BugTitle = Procedure.getAttribute("Title");
     }
     STAppData.BugArray.get(i).setBugTitle(BugTitle);
-    
+       if (hasGUI)
+    {
+    STAppFrame.BugViewArray.get(i).setBugTitle(BugTitle);
+    }
     String BugURL = "";
     if (Procedure.hasAttribute("URL"))
     {
@@ -725,8 +987,41 @@ for (int i = 0; i < ProcedureList.getLength(); ++i)
    }
   
    
-   
-     
+      if (hasGUI)
+    {
+  
+   newbugview.ActionScrollPane.setViewportView(new JPanel());
+    if (mainAppController.NewActionsMaster.ActionHashMap.contains(ActionType))
+           {
+              // BMAction thisActionToAdd = (BMAction) thisActionHashMap.get(ActionType);
+               BMAction thisActionToAdd = (BMAction) mainAppController.NewActionsMaster.CreateAction(ActionType);
+               
+             //  ActionView thisActionViewToAdd = (ActionView) thisActionViewHashMap.get(ActionType);
+              ActionView thisActionViewToAdd = (ActionView) mainAppController.NewActionsMaster.CreateActionView(ActionType);
+               thisActionToAdd.SetVars(Variable1, Variable2, Password, RealBoolVal1, RealBoolVal2, boolLOCKED);
+               thisActionViewToAdd.SetVars(Variable1, Variable2, Password, RealBoolVal1, RealBoolVal2, boolLOCKED);
+               thisActionViewToAdd.AddListeners(thisActionToAdd, STAppFrame, STAppData, newbug, newbugview);
+               thisActionViewToAdd.AddLoopListeners(thisActionToAdd, STAppFrame, STAppData, newbug, newbugview);
+               STAppFrame.AddActionViewToArray (thisActionViewToAdd, newbugview);
+               STAppData.AddActionToArray(thisActionToAdd, newbug, newbugview);
+            newbugview.refreshjComboBoxAddAtPosition();
+           }      
+ 
+     if (mainAppController.NewActionsMaster.PassFailActionHashMap.contains(ActionType))
+             {
+               BMAction thisActionToAdd = (BMAction) mainAppController.NewActionsMaster.CreatePassFailAction(ActionType);
+               ActionView thisActionViewToAdd = (ActionView) mainAppController.NewActionsMaster.CreatePassFailActionView(ActionType);
+               thisActionToAdd.SetVars(Variable1, Variable2, Password, RealBoolVal1, RealBoolVal2, boolLOCKED);
+               thisActionViewToAdd.SetVars(Variable1, Variable2, Password, RealBoolVal1, RealBoolVal2, boolLOCKED);
+           thisActionViewToAdd.AddListeners(thisActionToAdd, STAppFrame, STAppData, newbug, newbugview);
+               thisActionViewToAdd.AddLoopListeners(thisActionToAdd, STAppFrame, STAppData, newbug, newbugview);
+               STAppFrame.AddActionViewToArray (thisActionViewToAdd, newbugview);
+               STAppData.AddActionToArray(thisActionToAdd, newbug, newbugview);
+            newbugview.refreshjComboBoxAddAtPosition();
+             }
+    }
+      else
+      {
            if (mainAppController.NewActionsMaster.ActionHashMap.contains(ActionType))
            {
                BMAction thisActionToAdd = (BMAction) mainAppController.NewActionsMaster.CreateAction(ActionType);
@@ -744,7 +1039,7 @@ for (int i = 0; i < ProcedureList.getLength(); ++i)
                STAppData.AddActionToArray(thisActionToAdd, newbug);
                
              }
-      
+      }
    
  
  
@@ -756,7 +1051,10 @@ for (int i = 0; i < ProcedureList.getLength(); ++i)
 
     if (hasDataloop)
  {
-   
+        if (hasGUI)
+     {
+    STAppFrame.setJButtonFlattenFileEnabled(true); 
+     }
  
  } 
     }
@@ -766,6 +1064,29 @@ catch (Exception e)
           e.printStackTrace();
         }
  
-    
+     if (hasGUI)
+     {
+
+ 
+     for (ProcedureView PV: STAppFrame.BugViewArray)
+{
+    int avlockcount = 0;
+    for (ActionView AV: PV.ActionsViewList)
+    {
+       if (AV.Locked)
+       {
+           avlockcount++;
+       }
+     
+    }
+    if (avlockcount==PV.ActionsViewList.size())
+    {
+        PV.setLocked(true);
+    }
+}
+ mainAppController.AddNewGlobalHandlers(STAppFrame, STAppData);
+
+STAppFrame.initializeDisplay();
+     }
   }
 }

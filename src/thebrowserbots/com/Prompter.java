@@ -6,7 +6,7 @@ import java.awt.event.*;
 
 public class Prompter extends JFrame implements ActionListener 
 {
-   JButton ContinueButton;
+    JButton ContinueButton;
     JButton CancelButton;
     JLabel JLabelJumpTo;
     JComboBox JComboBoxJumpToValue;

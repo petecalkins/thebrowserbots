@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package thebrowserbots.com;
+package thebrowserbots.com;;
 
 import java.io.File;
 import javafx.scene.web.WebEngine;
@@ -83,7 +83,7 @@ String[] args;
              {
                   args[0]="runsilent";
                  args[1]=" " + BrowserMationFile;
-                   STAppController thisController2 = new STAppController(args);   
+                  STAppController thisController2 = new STAppController(args);   
      //    Runtime.getRuntime().exec("java -jar " + mainAppController.BROWSERMATORFOLDER + "Browsermator-Selenium4.jar" + " runsilent " + BrowserMationFile);
             String URLwithLogin = mainAppController.rootURL + "/browse_files.php?app_id="+mainAppController.APPID+ "&version=" + mainAppController.ProgramVersion + "&loginName=" + mainAppController.loginName + "&loginPassword=" + mainAppController.loginPassword;
 

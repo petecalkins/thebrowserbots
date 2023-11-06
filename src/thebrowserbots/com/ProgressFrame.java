@@ -17,7 +17,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-
+/**
+ *
+ * @author Pete
+ */
 public class ProgressFrame {
    JButton jButtonPause;
     JButton jButtonContinue;
@@ -35,7 +38,7 @@ public class ProgressFrame {
   {
      mainFrame = new JFrame(title); 
       JTextFieldProgress = new javax.swing.JTextField("Launching Browser");
-       JTextFieldProgress.setPreferredSize(new Dimension(300, 20));
+       JTextFieldProgress.setPreferredSize(new Dimension(300, 35));
        JTextFieldProgress.setText(_text);
          JPanel jPanelSouth2 = new JPanel();
         jPanelSouth2.add(JTextFieldProgress);
@@ -74,7 +77,7 @@ public class ProgressFrame {
         SouthButtonPanel.add(jButtonContinue);
         SouthButtonPanel.add(jButtonPause);
         SouthButtonPanel.add(jButtonCancel);
-       JTextFieldProgress.setPreferredSize(new Dimension(300, 20));
+       JTextFieldProgress.setPreferredSize(new Dimension(300, 30));
        JTextFieldProgress.setText("Launching Browser");
         jPanelSouth2.add(JTextFieldProgress);
         

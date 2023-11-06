@@ -3,5 +3,5 @@ package thebrowserbots.com;
 
 
 public interface Listenable {
- void AddListeners(BMAction action, SeleniumTestToolData STAppData, Procedure newbug);
+ void AddListeners(BMAction action, SeleniumTestTool STAppFrame, SeleniumTestToolData STAppData, Procedure newbug, ProcedureView newbugview);
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package thebrowserbots.com;
+package thebrowserbots.com;;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -30,7 +30,7 @@ TheBrowserBotsFileCloud TheBrowserBotsAppFrame;
 String OS;
 String USERCLOUDDIR;
 TheBrowserBotsConfig TheBrowserBotsConfig;
- public final String ProgramVersion = "2.1.046";
+ public final String ProgramVersion = "2.1.051";
  String APPID;
  String BROWSERMATORFOLDER;
  ArrayList<String> theseErrors = new ArrayList();
@@ -348,19 +348,16 @@ return "Unable to connect thebrowserbots.com.";
  WriteResource ("lib", "auto-service-annotations-1.0.1.jar");    
  WriteResource ("lib", "byte-buddy-1.12.10.jar");    
  WriteResource ("lib", "checker-qual-3.12.0.jar");    
- // WriteResource ("lib", "commons-codec-1.10.jar");    
+ 
  WriteResource ("lib", "commons-exec-1.3.jar");    
-// WriteResource ("lib", "commons-io-2.5.jar");    
-// WriteResource ("lib", "commons-logging-1.2.jar");    
+  
  WriteResource ("lib", "error_prone_annotations-2.11.0.jar");    
  WriteResource ("lib", "failsafe-3.2.4.jar"); 
  WriteResource ("lib", "failureaccess-1.0.1.jar");    
  WriteResource ("lib", "guava-31.1-jre.jar");    
  WriteResource ("lib", "htmlunit-driver-3.56.0-jar-with-dependencies.jar");    
  WriteResource ("lib", "j2objc-annotations-1.3.jar");    
- // WriteResource ("lib", "jackson-annotations-2.13.0.jar");
- // WriteResource ("lib", "jackson-core-2.13.0.jar");
-//  WriteResource ("lib", "jackson-databind-2.13.0.jar");
+
  WriteResource ("lib", "jakarta.activation-1.2.2.jar");
  WriteResource ("lib", "javax.mail.jar");
  WriteResource ("lib", "jcommander-1.82.jar");
@@ -376,7 +373,7 @@ return "Unable to connect thebrowserbots.com.";
  WriteResource ("lib", "netty-handler-proxy-4.1.78.Final.jar");
  WriteResource ("lib", "netty-reactive-streams-2.0.4.jar");
  WriteResource ("lib", "netty-resolver-4.1.78.Final.jar");
-// WriteResource ("lib", "netty-tcnative-classes-2.0.46.Final.jar");
+
  WriteResource ("lib", "netty-transport-4.1.78.Final.jar");
  WriteResource ("lib", "netty-transport-classes-epoll-4.1.78.Final.jar");
  WriteResource ("lib", "netty-transport-classes-kqueue-4.1.78.Final.jar");
@@ -385,7 +382,7 @@ return "Unable to connect thebrowserbots.com.";
  WriteResource ("lib", "netty-transport-native-unix-common-4.1.78.Final.jar");
  WriteResource ("lib", "opencsv-3.7.jar");
  WriteResource ("lib", "opentelemetry-api-1.15.0.jar");
-// WriteResource ("lib", "opentelemetry-api-metrics-1.9.0-alpha.jar");
+
  WriteResource ("lib", "opentelemetry-context-1.15.0.jar");
  WriteResource ("lib", "opentelemetry-exporter-logging-1.15.0.jar");
  WriteResource ("lib", "opentelemetry-sdk-1.15.0.jar");
@@ -406,7 +403,7 @@ return "Unable to connect thebrowserbots.com.";
  WriteResource ("lib", "selenium-devtools-v101-4.3.0.jar");
  WriteResource ("lib", "selenium-edge-driver-4.3.0.jar");
  WriteResource ("lib", "selenium-firefox-driver-4.3.0.jar");
- // WriteResource ("lib", "selenium-firefox-xpi-driver-4.3.0.jar");
+
  WriteResource ("lib", "selenium-http-4.3.0.jar");
  WriteResource ("lib", "selenium-ie-driver-4.3.0.jar");
  WriteResource ("lib", "selenium-java-4.3.0.jar");
