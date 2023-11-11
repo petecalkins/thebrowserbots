@@ -30,7 +30,7 @@ TheBrowserBotsFileCloud TheBrowserBotsAppFrame;
 String OS;
 String USERCLOUDDIR;
 TheBrowserBotsConfig TheBrowserBotsConfig;
- public final String ProgramVersion = "2.1.051";
+ public final String ProgramVersion = "2.1.053";
  String APPID;
  String BROWSERMATORFOLDER;
  ArrayList<String> theseErrors = new ArrayList();
@@ -56,7 +56,7 @@ public TheBrowserBots()
       
     if (!versionstored.equals(this.ProgramVersion))
     {
-   ExtractBrowserMatorFiles();
+//   ExtractBrowserMatorFiles();
     }
   }
   
@@ -317,129 +317,7 @@ String temppassword = TheBrowserBotsConfig.getKeyValue("loginPassword");
 return "Unable to connect thebrowserbots.com.";
   
  }
-  public void ExtractBrowserMatorFiles()
- {
-    
-  
-          ProgressFrame waitprompt = new ProgressFrame("Extracting Browsermator");
-       waitprompt.initNoButtons("Extracting Browsermator...");
- File lib_directory = new File(BROWSERMATORFOLDER + "lib");
-       if (lib_directory.exists()) { 
-           File[] libFiles;
-           try { 
-               libFiles  = lib_directory.listFiles();
-               for (File thisFile: libFiles)
-               {
-                   thisFile.delete();
-               }
-           } 
-           catch (Exception ex)
-           {
-               System.out.println(ex.toString());  
-           }
-       }
-       
-        
- WriteResource ("", "Browsermator-Selenium4.jar");
- WriteResource ("lib", "async-http-client-2.12.3.jar");    
- WriteResource ("lib", "async-http-client-netty-utils-2.12.3.jar");    
- WriteResource ("lib", "auto-common-1.2.1.jar");    
- WriteResource ("lib", "auto-service-1.0.1.jar");    
- WriteResource ("lib", "auto-service-annotations-1.0.1.jar");    
- WriteResource ("lib", "byte-buddy-1.12.10.jar");    
- WriteResource ("lib", "checker-qual-3.12.0.jar");    
- 
- WriteResource ("lib", "commons-exec-1.3.jar");    
-  
- WriteResource ("lib", "error_prone_annotations-2.11.0.jar");    
- WriteResource ("lib", "failsafe-3.2.4.jar"); 
- WriteResource ("lib", "failureaccess-1.0.1.jar");    
- WriteResource ("lib", "guava-31.1-jre.jar");    
- WriteResource ("lib", "htmlunit-driver-3.56.0-jar-with-dependencies.jar");    
- WriteResource ("lib", "j2objc-annotations-1.3.jar");    
 
- WriteResource ("lib", "jakarta.activation-1.2.2.jar");
- WriteResource ("lib", "javax.mail.jar");
- WriteResource ("lib", "jcommander-1.82.jar");
- WriteResource ("lib", "jsr305-3.0.2.jar");
- WriteResource ("lib", "jtoml-2.0.0.jar");
- WriteResource ("lib", "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar");
- WriteResource ("lib", "netty-buffer-4.1.78.Final.jar");
- WriteResource ("lib", "netty-codec-4.1.78.Final.jar");
- WriteResource ("lib", "netty-codec-http-4.1.78.Final.jar");
- WriteResource ("lib", "netty-codec-socks-4.1.78.Final.jar");
- WriteResource ("lib", "netty-common-4.1.78.Final.jar");
- WriteResource ("lib", "netty-handler-4.1.78.Final.jar");
- WriteResource ("lib", "netty-handler-proxy-4.1.78.Final.jar");
- WriteResource ("lib", "netty-reactive-streams-2.0.4.jar");
- WriteResource ("lib", "netty-resolver-4.1.78.Final.jar");
-
- WriteResource ("lib", "netty-transport-4.1.78.Final.jar");
- WriteResource ("lib", "netty-transport-classes-epoll-4.1.78.Final.jar");
- WriteResource ("lib", "netty-transport-classes-kqueue-4.1.78.Final.jar");
-  WriteResource ("lib", "netty-transport-native-epoll-4.1.78.Final.jar");
-  WriteResource ("lib", "netty-transport-native-kqueue-4.1.78.Final.jar");
- WriteResource ("lib", "netty-transport-native-unix-common-4.1.78.Final.jar");
- WriteResource ("lib", "opencsv-3.7.jar");
- WriteResource ("lib", "opentelemetry-api-1.15.0.jar");
-
- WriteResource ("lib", "opentelemetry-context-1.15.0.jar");
- WriteResource ("lib", "opentelemetry-exporter-logging-1.15.0.jar");
- WriteResource ("lib", "opentelemetry-sdk-1.15.0.jar");
- WriteResource ("lib", "opentelemetry-sdk-common-1.15.0.jar");
- WriteResource ("lib", "opentelemetry-sdk-extension-autoconfigure-1.15.0-alpha.jar");
- WriteResource ("lib", "opentelemetry-sdk-extension-autoconfigure-spi-1.15.0.jar");
- WriteResource ("lib", "opentelemetry-sdk-logs-1.15.0-alpha.jar");
- WriteResource ("lib", "opentelemetry-sdk-metrics-1.15.0.jar");
- WriteResource ("lib", "opentelemetry-sdk-trace-1.15.0.jar");
- WriteResource ("lib", "opentelemetry-semconv-1.15.0-alpha.jar");
- WriteResource ("lib", "reactive-streams-1.0.4.jar");
- WriteResource ("lib", "selenium-api-4.3.0.jar");
- WriteResource ("lib", "selenium-chrome-driver-4.3.0.jar");
- WriteResource ("lib", "selenium-chromium-driver-4.3.0.jar");
- WriteResource ("lib", "selenium-devtools-v85-4.3.0.jar");
- WriteResource ("lib", "selenium-devtools-v99-4.3.0.jar");
- WriteResource ("lib", "selenium-devtools-v100-4.3.0.jar");
- WriteResource ("lib", "selenium-devtools-v101-4.3.0.jar");
- WriteResource ("lib", "selenium-edge-driver-4.3.0.jar");
- WriteResource ("lib", "selenium-firefox-driver-4.3.0.jar");
-
- WriteResource ("lib", "selenium-http-4.3.0.jar");
- WriteResource ("lib", "selenium-ie-driver-4.3.0.jar");
- WriteResource ("lib", "selenium-java-4.3.0.jar");
- WriteResource ("lib", "selenium-json-4.3.0.jar");
-  WriteResource ("lib", "selenium-opera-driver-4.3.0.jar");
- WriteResource ("lib", "selenium-remote-driver-4.3.0.jar");
-  WriteResource ("lib", "selenium-safari-driver-4.3.0.jar");
- WriteResource ("lib", "selenium-support-4.3.0.jar");
- WriteResource ("lib", "slf4j-api-1.7.36.jar");
- WriteResource ("lib", "slf4j-nop-1.7.9.jar");
- 
- WriteResource ("", "browsermator_license.txt"); 
- WriteResource ("", "chromedriver_license.txt"); 
- WriteResource ("", "geckodriver_license.txt"); 
- WriteResource ("", "Joe Walnes-base64encoder-bsd-license.txt"); 
- WriteResource ("", "selenium-apache2-license.txt"); 
- WriteResource ("", "commons_license.txt"); 
-
-
-  if (theseErrors.size()>0)
-  {
-      String allErrors = "";
-      for (String thisError: theseErrors)
-      {
-          allErrors+=thisError;
-      }
-      Prompter errorsPrompt = new Prompter ("Error extracting files.", "The following errors occurred while extracting files: " + allErrors, false,0,0);
-
-  }
- else
-  {
-    TheBrowserBotsConfig.setKeyValue("version_main", this.ProgramVersion);
-  }
- waitprompt.mainFrame.dispose();
-    
- }
 
   public void WriteResource (String dirname, String filename)
  {

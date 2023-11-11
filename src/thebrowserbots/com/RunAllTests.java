@@ -386,7 +386,8 @@ System.out.println ("Exception when quitting driver: " + ex.toString());
      
     if (STAppData.getExitAfter())
     {
-    System.exit(0);
+   //browserbots shouldn't do this
+   // System.exit(0);
     }
   
       
@@ -427,14 +428,14 @@ System.out.println ("Exception when quitting driver: " + ex.toString());
     }
          if (STAppFrame==null)
      {
-    
-     System.exit(0);
+    //browserbots shouldn't do this
+   //  System.exit(0);
       }
     if (STAppData.getExitAfter())
     {
     
-          
-    System.exit(0);
+     //browserbots shouldn't do this        
+    //System.exit(0);
     }
   
  }
