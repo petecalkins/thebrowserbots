@@ -4334,7 +4334,7 @@ STAppFrame.saveState();
                 DriverUpdateFail = true;
             }
         }
-      InputStream inStream = STAppController.class.getResourceAsStream("/browsermator4/com/Resources/" + dirname + "/" + filename);
+      InputStream inStream = STAppController.class.getResourceAsStream("/thebrowserbots/com/Resources/" + dirname + "/" + filename);
    
       File newFile = new File(WEBDRIVERSDIR + dirname + File.separator + filename); 
           Path BMAppPath = newFile.toPath();
